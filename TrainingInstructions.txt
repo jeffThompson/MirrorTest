@@ -1,0 +1,94 @@
+
+TRAINING CASCADE FILES
+Jeff Thompson | 2014 | www.jeffreythompson.org
+
+These instructions (currently rough working notes) are for creating OpenCV object recognition 'cascade' files.
+
+Generously supported by a grant/residency from Impakt (impakt.nl) and developed while in residence in Utrecht, Netherlands.
+
+- - -
+
+CONTENTS
+1.	Requirements
+2.	Installing OpenCV
+3.	Gathering positive images
+4.	Creating a collection file
+5.	Gathering negative images
+6.	Creating a list of negative images
+7.	Using create_samples
+8.	Training the cascade
+9.	Test the results
+
+- - -
+
+1.	REQUIREMENTS
+
++	A digital camera with video capability (still images will work too, but shooting video is much faster and easier)
+
++	Updated version of Python
++	Homebrew installed (see http://brew.sh for instructions - it's very easy!)
++	FFMPEG library (once Hombebrew is installed, just type 'brew install ffmpeg')
++	OpenCV2 (cv2) library (see 'Installing OpenCV' for instructions)
+
+- - -
+
+2.	INSTALLING OPENCV
+These instructions assume you're working on a Mac or Unix-based machine. Sorry to other users, though these should work with a little tweaking!
+
+** NOTE! The cv2 install will likely BREAK your OpenCV installation for use with Processing. Processing will work normally, but you won't be able to use OpenCV with it. You have been warned! **
+
+1. Install the OpenCV library using Homebrew and these instructions:
+http://www.jeffreythompson.org/blog/2013/08/22/update-installing-opencv-on-mac-mountain-lion
+
+2. Verify your installation by typing 'opencv' into the Terminal. You can also check the other necessary commands:
+
+	opencv_createsamples
+	opencv_traincascade
+
+You should be all set!
+
+- - -
+
+3.	GATHERING POSITIVE IMAGES
+
+Shoot video from many angles (deep DOF using high f-stop)
+Extract frames with ffmpeg
+	ffmpeg -i MacbookProVideo.mp4 -r 24 -s 940x540 -f image2 MacbookProFrames/%08d.png
+
+Images should be under 1MB, which 1920x1080 HD pngs are.
+BUT reduce size so they fit in P5 sketch (lazy but faster)
+
+1:23 of video = 1,985 frames!
+
+Ideally this would be under diff light, etc
+
+(turntable better?)
+
+- - -
+
+4.	CREATING A COLLECTION FILE
+
+- - -
+
+5.	GATHERING NEGATIVE IMAGES
+
+- - -
+
+6.	CREATING A LIST OF NEGATIVE IMAGES
+
+- - -
+
+7.	USING create_samples
+
+- - -
+
+8.	TRAINING THE CASCADE
+
+- - -
+
+9.	TEST THE RESULTS
+
+- - -
+
+
+

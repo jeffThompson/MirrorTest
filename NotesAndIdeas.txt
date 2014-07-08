@@ -1,0 +1,228 @@
+
+NOTES && IDEAS:
+
+"Our forebears expected [the future] to be pretty much like their present, which had been pretty much like their past. Exponential trends [in technology] did exist one thousand years ago, but they were at that very early stage in which they were so flat that they looked like no trend at all." - pg 33
+
+DNA is just a self-replicating machine
+
+
+- - - - - - - - -
+
+http://www.jstor.org/stable/2183914
+
+http://cogprints.org/7150/1/10.1.1.83.5248.pdf
+
+http://en.wikipedia.org/wiki/Chinese_room
+
+http://www.businessinsider.com/louis-del-monte-interview-on-the-singularity-2014-7
+
+https://medium.com/message/the-fire-phone-at-the-farmers-market-34f51c2ba885
+https://github.com/jetpacapp/DeepBeliefSDK/wiki/How-to-recognize-custom-objects
+http://www.aec.at/aeblog/en/2014/06/20/das-auge-aus-der-zauberkiste/
+http://www.theatlantic.com/technology/archive/2014/06/data-doppelgangers-and-the-uncanny-valley-of-personalization/372780/
+
+http://event.on24.com/r.htm?e=779097&s=1&k=C473F6F8FB7BE716DCCF96037F2C62BB
+
+http://arxiv.org/pdf/1406.3284v1.pdf
+
+http://thewildmagazine.com/blog/these-accidental-mirror-pics-on-google-museum-are-pretty-creepy/
+
+http://opencvuser.blogspot.nl/2011/08/creating-haar-cascade-classifier-aka.html
+
+http://ai-linux.hs-harz.de/fstolzenburg/papers/SS11b.pdf
+
+http://www.research.rutgers.edu/~lihong/pub/Levner03Learning.pdf
+
+http://eprints.utas.edu.au/8355/9/horton06chapter5.pdf
+
+http://www.mi.fu-berlin.de/inf/groups/ag-ki/Theses/Completed-theses/Master_Diploma-theses/2013/Hofmann/Master-Hofmann.pdf?1381479774
+
+http://www.research.rutgers.edu/~lihong/pub/Levner03Learning.pdf
+
+HOG
+http://en.wikipedia.org/wiki/Histogram_of_oriented_gradients
+http://www.mdpi.com/1424-8220/13/9/11603/htm
+http://www.umiacs.umd.edu/~zhuolin/Keckgesturedataset.html
+http://chrisjmccormick.wordpress.com/2013/05/09/hog-person-detector-tutorial/
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+10.27.12
+
++ http://code.google.com/p/javacv/wiki/ConvertingOpenCV
++ http://www.21csi.com/?q=blog/buildingtrainingdata
++ http://note.sonots.com/SciSoftware/haartraining.html
++ http://note.sonots.com/SciSoftware/haartraining/mergevec.cpp.html
+
+10.11.12
+
++ If using Processing, update to OpenCV 2 will BREAK the Hypermedia OpenCV library; instead, the newer javacvPro library will work fine (maybe) and is very similar:
+
+http://www.mon-club-elec.fr/pmwiki_reference_lib_javacvPro/pmwiki.php
+	or...
+http://translate.google.com/translate?sl=auto&tl=en&js=n&prev=_t&hl=en&ie=UTF-8&layout=2&eotf=1&u=http%3A%2F%2Fwww.mon-club-elec.fr%2Fpmwiki_reference_lib_javacvPro%2Fpmwiki.php&act=url
+
+10.10.12
++ traincascade:
+
+	opencv_traincascade -data cascadeFiles -vec output.vec -bg negativeImages.txt -numPos 100 -numNeg 20 -numStages 20 -mem 4000 -maxHitRate 0.95 -w 80 -h 60
+	
+	With a full 100+ and 20- images (actually), ran until stage 11 and stopped
+
++ "false leaf rate" error might not be - just the normal end of the process
+	see: http://tech.dir.groups.yahoo.com/group/OpenCV/messages/24227?threaded=1&m=e&var=1&tidx=1
+
++ supposedly, background images MUST be larger (by 2x or more) than the positive image files - this is likely not a problem if the positives are cropped
+
++ rather than use the clunky createsamples utility that can only work with one image (and then how do you combine the vec files?) - write a P5 app that does the transformations and saves a ton of images, as well as a collection file for them!
+
++ when training, the -nosym should be used for non-vertically symmetrical objects (like a drill, not like a face or bottle)
+
++ try this command to make LOTS of positive samples
+		opencv_createsamples -img PositiveImageFiles-Cropped/01.jpg -num 300 -bg negativeImages.txt -vec output.vec -bgcolor 0 -bgthresh 0 -w 80 -h 60
+
+		(via: http://note.sonots.com/SciSoftware/haartraining.html)
+
+10.8.12
++ Python requires cv2!
+
+10.4.12
++ It seems that opencv_traincascade may break if there are more positive than negative 
+  images, or we need to set the minHitRate lower (around 0.99)
++ Another suggestion is to use -numPos as 0.9 * actual # of positive samples
+  (http://answers.opencv.org/question/776/error-in-parameter-of-traincascade)
+  
++ it appears that (despite what you might imagine) that increasing the # of stages helps a 
+  lot - keeps from getting an aborted "false leaf rate" error
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+STEP-BY-STEP INSTRUCTIONS:
+
+0. Install OpenCV and make sure it runs by typing 'opencv' into the command-line; for
+   an installation guide for Mac, see:
+   
+   http://www.jeffreythompson.org/blog/2012/09/21/installing-opencv-for-python-on-mac-lion
+   
+   Not to be confused with Processing's port of the OpenCV library, the full version must 
+   be installed via the command-line.  This install includes all features, including a few 
+   extra tools accessible only via the command-line.  It's kinda hard, but worth it!
+
+1. Create a set of "positive" images in single folder (png or jpg format and preferably 
+   under about 1MB in size); at least several hundred images are needed; professional 
+   object detection uses 5000-7000 images!
+
+2. Run the CreateCollectionFile program to define bounding boxes for each image; the 
+   instructions are in the sketch and as follows:
+   
+     a. Open the folder where the images are stored
+     
+     b. Click-and-drag to define the boundaries of the object in the photograph
+     
+     c. Hit spacebar to save the selection; arrow keys to jump without 
+     	saving; enter/return to select the entire image and move on
+     
+     d. When done, quit
+
+3. On exit, a text file will be automatically saved as 'collection.txt'
+
+4. Create a list of negative images - in the Terminal, navigate to the negative image
+   folder using the 'cd' command, then type:
+   
+   		 ls > bg.txt
+   
+   Easy! The file can be named whatever you want, but this is often called the 		
+   "background" and sometimes referred to as bg.txt in the OpenCV documentation so
+   it may be easier to name your file 'bg.txt'.
+
+   This can also be done by hand (no bounds necessary) in a text file with the paths 
+   to the images.
+
+5. Run the opencv_createsamples utility in the command line by doing the following:
+    
+    a. Navigate to the folder containing your text files (cd path/to/folder)
+    
+    b. Run the following command:
+         opencv_createsamples -info collection.txt -bg negativeImages.txt -vec 
+         positiveVectorFile.vec -num numBoundingBoxes -w 32 -h 24
+       
+       -info	collection file created in step 2 and 3
+       -vec		name of vector file to be created in this step (can by anything)
+       -num		number of objects defined in the collection file (give at end of step 2); 
+       			the default appears to be 1000, so problems will occur if you don't use 
+       			the right number
+       -w -h	width and height to apply to samples; default is 24x24 but keeping the  
+       			aspect ratio of the original files (32x24 mimics a 4x5" photograph); this 		
+       			argument is not necessary, but may cause distortion without
+       			
+       -bg		OPTIONAL: background file of negative images, step 4
+       -show	OPTIONAL: will display the images when done (same as next step)
+
+6. While not necessary, you can view the resulting images in the vector file by typing:
+    
+     opencv_createsamples -vec vectorFilename.vec -h 32 -w 24
+   
+   Use any key to advance one-by-one.  If you did not specify a width/height in the 
+   previous step, you will notice they have been squished to the default 24x24 pixel size.
+
+7. Run the training program in the Terminal; specify the positive vector file, the 
+   background text file, the number of images for both, and the number of "stages" to run 
+   (try 5 to start).  You can also (optionally) specify the amount of memory to allocate 
+   in Mb - approximately 1/2 your total RAM is the suggested max:
+   
+     opencv_traincascade -data directoryToStoreFiles -vec positiveVectorFile.vec -bg 
+     negativeImageList.txt -numPos 1000 -numNeg 1000 -numStages 5 -mem 1000 -maxHitRate 
+     0.95 -w 32 -h 24
+   
+   -data		a directory into which the program will write files; this MUST be made 
+   				first by you, otherwise you will get an annoying "cannot load params.xml" 
+   				error
+   -vec			the vector file created in step 5
+   -bg			the background file created in step 4
+   -numPos		the # of positive images in the collection file (same as -num in step 5*)
+   -numNeg		the # of negative images in the -bg file
+   -numStages	the # of "stages" to run through the collection; try 20 to start
+   
+   -mem			OPTIONAL: memory allocation in Mb, approximately 1/2 of your total RAM is 
+   				the suggested maximum for normal use; more will make the process faster
+   -w -h		OPTIONAL: if specified in previous steps, you must do so in this step too 
+   				or you will get an "assertion failed" error (basically meaning you are 
+   				trying to read pixels outside of the image!)
+   -maxHitRate	OPTIONAL: default is 0.999, but setting at 0.99 may keep from getting 
+   				errors when using less that ideal source files
+   
+   This process can take LONG time (like days or even weeks) - however, you can bail after 
+   any successful training stage and compile.
+   
+   * This may take some tweaking; I have found that running -numPos at about 90% of the 
+   real total works better, but experimenting is the best bet (if you're patient).  My 
+   experimenting suggests that this is like keeping a reserve of images to be tapped if 
+   the maxHitRate is reached too soon
+
+8. The process will output several XML files into the folder you specified, but the only 
+   one that has to be kept is the cascade.xml file.  If that shows up, you're all set!
+
+9. Test using your OpenCV programming language of choice; Python requires cv2 if using  
+   opencv_traincascade - see the enclosed example
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+OTHER RESOURCES:
+
+0. The article used as a starting point for this tutorial:
+   
+     http://docs.opencv.org/trunk/doc/user_guide/ug_traincascade.html
+
+1. Two more in-depth and technical article, but has some great info on performance
+   and testing the resulting files (most of the good stuff is towards the middle and 
+   bottom):
+   
+     http://note.sonots.com/SciSoftware/haartraining.html
+     http://note.sonots.com/SciSoftware/haartraining.html#q16bb608
+
+2. Another, more basic and how-to example that uses 1k positive and negative images at 20 
+   stages:
+   
+     http://www.technolabsz.com/2011/08/how-to-do-opencv-haar-training.html
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
