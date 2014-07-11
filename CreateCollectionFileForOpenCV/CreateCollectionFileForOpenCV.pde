@@ -45,29 +45,29 @@ CREATE COLLECTION FILE FOR OpenCV
  */
 
 // BASIC SETUP VARIABLES
-int imageWidth =     960;    // input image size (hopefully later to be set automatically)
-int imageHeight =    540;
+int imageWidth =     800;    // input image size (hopefully later to be set automatically)
+int imageHeight =    601;
 int topUIHeight =    50;     // size of UI for top and bottom bars
 int bottomUIHeight = 65;
 
-boolean showInstructions =       true;      // show instructions at bottom (toggle with "i")
-boolean showCrosshairs =         true;      // show crosshairs for cursor (makes it easier to see where your mouse is)
+boolean showInstructions =       false;     // show instructions at bottom (toggle with "i")
 boolean resetBoundingBoxOnSave = false;     // keep the bounding box from the previous frame after saving?
 int bigStep =                    10;        // how many files to jump on a "big step" (U/D arrow keys)
 
 
 // OTHER VARIABLES (do not change)
-boolean done =   false;    // are we all done yet?
-int whichImage = 0;        // which image are we looking at?
-int numImages =  0;        // how many images are there total?
-int numStored =  0;        // how many have been saved to the collection file? 
-File[] images;             // array of input image files
-PImage img;                // currently displayed image
-boolean [] stored;         // array to track which images have been recorded (hopefully in a separate class soon)
-PrintWriter output;        // for appending to collection file
-File outputFile;           // collection file
-int x, y, w, h;            // coordinates and dims of bounding box
-PFont font;                // UI font
+boolean done =   false;              // are we all done yet?
+int whichImage = 0;                  // which image are we looking at?
+int numImages =  0;                  // how many images are there total?
+int numStored =  0;                  // how many have been saved to the collection file? 
+File[] images;                       // array of input image files
+PImage img;                          // currently displayed image
+boolean [] stored;                   // array to track which images have been recorded (hopefully in a separate class soon)
+PrintWriter output;                  // for appending to collection file
+File outputFile;                     // collection file
+int x, y, w, h, ctrX, ctrY;          // coordinates and dims of bounding box
+PFont font;                          // UI font
+boolean altOptionPressed = false;    // is the option key pressed?
 
 
 void setup() {
@@ -75,12 +75,13 @@ void setup() {
   // basic setup stuff
   size(imageWidth, imageHeight + topUIHeight);
   cursor(CROSS);
+  //noCursor();
   frame.setTitle("Create Collection File");
   font = createFont("LucidaConsole", 64);
   textAlign(LEFT, CENTER);
 
   // start box offscreen (so it doesn't show up before we've made a selection)
-  x = y = -10;
+  x = y = 0;
   mouseX = width/2;
   mouseY = height/2 + topUIHeight;
 
@@ -105,7 +106,6 @@ void draw() {
   // if not finished yet, draw image and interface
   else if (!done) {
     image(img, 0, topUIHeight);
-    drawUI();
 
     // bounding box
     if (x >= 0 && y >= 0) {
@@ -117,7 +117,7 @@ void draw() {
     }
 
     // crosshairs for easier editing
-    if (showCrosshairs) {
+    if (mouseY > topUIHeight) {
       stroke(0, 100);
       line(0, mouseY, width, mouseY);
       line(mouseX, 0, mouseX, height);
@@ -125,11 +125,27 @@ void draw() {
       line(0, mouseY-1, width, mouseY-1);
       line(mouseX+1, 0, mouseX+1, height);
     }
+    
+    // little box to indicate we're in center mode, center mark
+    if (altOptionPressed) {
+      stroke(255, 80);
+      noFill();
+      rectMode(CENTER);
+      rect(mouseX,mouseY, 30,30);
+      rectMode(CORNER);
+
+      stroke(255);
+      line(ctrX-3, ctrY + topUIHeight, ctrX+3, ctrY + topUIHeight);
+      line(ctrX, ctrY + topUIHeight - 3, ctrX, ctrY + topUIHeight + 3);      
+    }
+    
+    // draw user interface on top (hides crosshairs, etc)
+    drawUI();
   }
 
   // if done, let us know
   else {
-    background(150);
+    background(255,150,0);    // a nice warm orange!
     fill(255);
     noStroke();
     textAlign(CENTER, CENTER);
@@ -137,6 +153,8 @@ void draw() {
     text("ALL DONE!", width/2, height/2 - 30);
     textFont(font, 28);
     text("# of objects stored: " + nfc(numStored), width/2, height/2 + 30);
+    textFont(font, 14);
+    text("(have a beer, you deserve it!)", width/2, height/2 + 70);
   }
 }
 

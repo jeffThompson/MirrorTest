@@ -189,7 +189,8 @@ STEP-BY-STEP INSTRUCTIONS:
    				or you will get an "assertion failed" error (basically meaning you are 
    				trying to read pixels outside of the image!)
    -maxHitRate	OPTIONAL: default is 0.999, but setting at 0.99 may keep from getting 
-   				errors when using less that ideal source files
+   				errors when using less that ideal source files (I think this is the detection
+   				rate - if set lower, it be less accurate but more likely to finish)
    
    This process can take LONG time (like days or even weeks) - however, you can bail after 
    any successful training stage and compile.

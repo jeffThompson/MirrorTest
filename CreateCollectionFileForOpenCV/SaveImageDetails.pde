@@ -7,16 +7,14 @@ void saveDetails() {
   
   // convert screen coords to image coords before saving
   // saves in this format: "image-path #objects x y w h"
-  String outputString = images[whichImage].getAbsolutePath() + " 1 " + x + " " + constrain(y-topUIHeight, 1, img.height-1) + " " + w + " " + constrain(h-topUIHeight, 1, img.height-1);
+  String outputString = images[whichImage].getAbsolutePath() + " 1 " + x + " " + y + " " + w + " " + h;
   appendToTextFile(outputString);
 
   // update bounding box variables, if specified
   // (if not, will leave for next image, which may be useful)
   if (resetBoundingBoxOnSave) {
-    x = -10;    // move offscreen again
-    y = -10;
-    w = 0;      // reset size
-    h = 0;
+    x = y = 0;    // move offscreen again
+    w = h = 0;      // reset size
   }
 
   // keep track of if this image has been stored

@@ -11,18 +11,17 @@ void loadCollectionFile() {
   
   // check which of the images we already stored
   // (messy yes and could probably be clearer)
-  int alreadyStored = 0;                                // count # of images we've stored (just to let us know)
   for (int i=0; i<images.length; i++) {                 // go through all images (because we need the index)
     for (String line : collectionFile) {                // for each image, go see if it's in the collection file
       String path = line.split(" ")[0];                 // get just the file path from the listing
       if (path.equals(images[i].getAbsolutePath())) {   // if the two match...
         stored[i] = true;                               // ...set the 'stored' array entry to true
-        alreadyStored++;                                // and increment the count
+        numStored++;                                // and increment the count
       }
     }
   }
   
   // how many did we already have?
-  println("Loaded " + alreadyStored + " already stored images...");
+  println("Loaded " + numStored + " already stored images...");
 }
 
