@@ -23,6 +23,7 @@ Created during a residency generously supported by Impakt.nl
 import os 				# for creating directories, etc
 import itertools		# for creating combinations of settings
 import subprocess		# for running command line OpenCV commands
+import time				# keep track of how long each combination takes
 
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ##
@@ -33,6 +34,7 @@ object_to_detect = 		'iPhone'						# what are you detecting? auto-names files fo
 collection_filename = 	'Collection.txt'				# file with bounded objects
 negative_filename = 	'NegativeImages.txt'			# large file listing negative images
 memory_allocation = 	4000							# how much RAM to use (in MB, should be no more than 1/2 total RAM)
+log_filename =			'Log.csv'						# record settings and results to file
 
 # settings to iterate
 pos = 			  [ 1, 2, 3, 5, 10 ] 					# how many positive images to use (will use in order of filename)
@@ -95,16 +97,15 @@ def create_vector_file(collection, negative_file, vector_file, num_pos, num_neg,
 
 
 # train OpenCV using OpenCV's 'trainsamples' program
-def train_cascade(num_stages, num_pos, num_neg, accept, w, h, vector_file, negative_file):
+def train_cascade(cascade_dir, num_stages, num_pos, num_neg, accept, w, h, vector_file, negative_file):
 	
-	print '- stages:      ', num_stages
-	print '- pos images:  ', num_pos
-	print '- neg images:  ', num_neg
-	print '- accept rate: ', accept
-	print '- dims:        ', w, 'x', h
+	print '- stages:       ', num_stages
+	print '- pos images:   ', num_pos
+	print '- neg images:   ', num_neg
+	print '- accept rate:  ', accept
+	print '- dims:         ', w, 'x', h
 
 	# create output directory
-	cascade_dir = cascade_path + 'CascadeOutput_' + str(num_stages) + 'Stages-' + str(num_pos) + 'Pos-' + str(num_neg) + 'Neg-' + str(accept) + 'AccceptRate-' + str(w) + 'W-' + str(h) + 'H'
 	make_dir(cascade_dir)
 
 	# set commands for training
@@ -137,6 +138,26 @@ def make_dir(dir):
 	os.makedirs(dir)
 	return True
 
+# format a time in seconds into the largest unit
+# ie 59 seconds will be returned in seconds, but 60 as 1 minute
+def format_time_in_largest_unit(seconds, decimal_places):
+	minutes = seconds / 60.0
+	hours =   minutes / 60.0
+	
+	# probably a more elegant way to do this, but whatever :)
+	if hours >= 1.0:
+		out_time = hours
+		unit = 'hours'
+	elif minutes >= 1.0:
+		out_time = minutes
+		unit = 'minutes'
+	else:
+		out_time = seconds
+		unit = 'seconds'
+	
+	# output in formatted string with N decimal places
+	return '{0:.{1}f}'.format(out_time, decimal_places) + ' ' + unit
+
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ##
 # MAIN PROGRAM
@@ -154,6 +175,11 @@ if make_dir(vector_path):
 	print '-', vector_path
 if make_dir(cascade_path):
 	print '-', cascade_path
+
+# write header to log file, if it doesn't exist
+if not os.path.exists(log_filename):
+	with open(log_filename, 'w') as log:
+		log.write('stages,num_pos,num_neg,accept_rate,width,height,processing_time_sec,cascade_filename' + '\n')
 
 # get all combinations of settings (via: http://stackoverflow.com/a/798893/1167783)
 s = [ stages, pos, neg, accept_rate, width, height ]
@@ -178,7 +204,8 @@ print 'negative images: ', total_neg
 # train that sucker!
 for i, combo in enumerate(combinations):
 
-	print '\n' + ('- ' * 5) + '\n\n' + str(i+1) + '/' + str(len(combinations))
+	print '\n' + ('- ' * 5) + '\n\n' + str(i+1) + '/' + str(len(combinations)) + '\n'
+	start_time = time.time()
 
 	# get settings from combination - makes things a little semantically easier :)
 	num_stages = combo[0]
@@ -195,7 +222,7 @@ for i, combo in enumerate(combinations):
 	if num_pos > total_pos:
 		print "  can't create collection file with", num_pos, "images (there are only", total_pos, "available)!" + "\n"
 		continue
-	print (str(num_pos) + ' images:').ljust(13),
+	print (str(num_pos) + ' images:').ljust(12),
 	collection_file = collection_path + object_to_detect + '_Collection-' + str(num_pos) + 'Images.txt'
 	create_collection_file(collection_file, num_pos)
 	print 'done!'
@@ -205,21 +232,31 @@ for i, combo in enumerate(combinations):
 	if num_neg > total_neg:
 		print "\n" + "can't create", num_neg, "negative files (there are only", total_neg, "available)!" + "\n"
 		continue
-	print (str(num_neg) + ' images:').ljust(13),
+	print (str(num_neg) + ' images:').ljust(12),
 	negative_file = negative_path + 'NegativeImages_' + str(num_neg) + '.txt'
 	create_negative_file(negative_file, num_neg)
 	print 'done!'
 
 	# create vector file with positive/negative images
 	print '\n' + 'creating vector file...'
-	print (str(num_pos) + 'pos/' + str(num_neg) + 'neg:').ljust(13),
+	print (str(num_pos) + 'pos/' + str(num_neg) + 'neg:').ljust(12),
 	vector_file = vector_path + 'Vector_' + str(num_pos) + 'pos-' + str(num_neg) + 'neg.vec'
 	create_vector_file(collection_file, negative_file, vector_file, num_pos, num_neg, w, h)
 	print 'done!'
 
 	# finally, train it!
 	print '\n' + 'training cascade...'
-	train_cascade(num_stages, num_pos, num_neg, accept, w, h, vector_file, negative_file)
+	cascade_filename = cascade_path + 'CascadeOutput_' + str(num_stages) + 'Stages-' + str(num_pos) + 'Pos-' + str(num_neg) + 'Neg-' + str(accept) + 'AccceptRate-' + str(w) + 'W-' + str(h) + 'H'
+	train_cascade(cascade_filename, num_stages, num_pos, num_neg, accept, w, h, vector_file, negative_file)
+
+	# how long has elapsed? argument is time in seconds and number of decimal places
+	end_time = time.time()
+	processing_time = format_time_in_largest_unit(end_time - start_time, 3)
+	print '\n' + 'processing time: ' + processing_time
+
+	# save details to log file
+	with open(log_filename, 'a') as log:
+		log.write(str(num_stages) + ',' + str(num_pos) + ',' + str(num_neg) + ',' + str(accept) + ',' + str(w) + ',' + str(h) + ',' + str(end_time - start_time) + ',' + cascade_filename + '\n')
 
 
 # all done!
