@@ -30,20 +30,25 @@ import time				# keep track of how long each combination takes
 #  VARIABLES
 
 # setup variables
-object_to_detect = 		'iPhone'						# what are you detecting? auto-names files for clarity
-collection_filename = 	'Collection.txt'				# file with bounded objects
-negative_filename = 	'NegativeImages.txt'			# large file listing negative images
-memory_allocation = 	4000							# how much RAM to use (in MB, should be no more than 1/2 total RAM)
-log_filename =			'Log.csv'						# record settings and results to file
+object_to_detect = 		'MacBookPro-Front'						# what are you detecting? auto-names files for clarity
+collection_filename = 	'MacBookPro_Front_Collection.txt'		# file with bounded objects
+negative_filename = 	'NegativeImages.txt'					# large file listing negative images
+memory_allocation = 	4000									# how much RAM to use (in MB, should be no more than 1/2 total RAM)
+log_filename =			'Log.csv'								# record settings and results to file
 
 # settings to iterate
-pos = 			  [ 1, 2, 3, 5, 10 ] 					# how many positive images to use (will use in order of filename)
-stages = 		  [ 5, 10, 15, 20 ]						# how many stages to run (smaller = faster but less accurate)
-neg = 			  [ 10, 20, 50, 100, 200, 500 ]			# how many negative images to use
-accept_rate = 	  [ 0.80, 0.90, 0.95, 0.99 ]			# acceptance % (higher = more accurate but MUCH slower to train)
-width = 		  [ 32 ]								# output size for vector and training
-height = 		  [ 32 ]
-is_symmetrical =  True									# is the object being used symmetrical?
+pos = 			  [ 1, 5, 11 ] 			# how many positive images to use (will use in order of filename)
+stages = 		  [ 10, 20, 30 ]		# how many stages to run (smaller = faster but less accurate)
+neg = 			  [ 100, 200 ]			# how many negative images to use
+accept_rate = 	  [ 0.95, 0.99 ]		# acceptance % (higher = more accurate but MUCH slower to train)
+width = 		  [ 24, 32 ]			# output size for vector and training
+height = 		  [ 24, 32 ]
+
+use_bg_color =	  True
+bgColor = 		  0
+bgThresh = 		  0
+
+is_symmetrical =  True					# is the object being used symmetrical?
 
 # set paths for output
 local_path = 			os.path.dirname(os.path.realpath(__file__))		# path to script
@@ -126,6 +131,10 @@ def train_cascade(cascade_dir, num_stages, num_pos, num_neg, accept, w, h, vecto
 	# if object isn't symmetrical, add to list of commands
 	if not is_symmetrical:
 		commands.append('-nosym')
+
+	# use a background color?
+	if use_bg_color:
+		commands.extend( [ '-bgColor', str(bgColor), '-bgThresh', str(bgThresh) ] )
 
 	# do it!
 	subprocess.check_output(commands)
@@ -246,7 +255,7 @@ for i, combo in enumerate(combinations):
 
 	# finally, train it!
 	print '\n' + 'training cascade...'
-	cascade_filename = cascade_path + 'CascadeOutput_' + str(num_stages) + 'Stages-' + str(num_pos) + 'Pos-' + str(num_neg) + 'Neg-' + str(accept) + 'AccceptRate-' + str(w) + 'W-' + str(h) + 'H'
+	cascade_filename = cascade_path + 'CascadeOutput_' + str(num_stages) + 'Stages-' + str(num_pos) + 'Pos-' + str(num_neg) + 'Neg-' + str(accept) + 'AcceptRate-' + str(w) + 'W-' + str(h) + 'H'
 	train_cascade(cascade_filename, num_stages, num_pos, num_neg, accept, w, h, vector_file, negative_file)
 
 	# how long has elapsed? argument is time in seconds and number of decimal places
