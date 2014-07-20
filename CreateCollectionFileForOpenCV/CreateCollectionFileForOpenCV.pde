@@ -45,8 +45,8 @@ CREATE COLLECTION FILE FOR OpenCV
  */
 
 // BASIC SETUP VARIABLES
-int imageWidth =     800;    // input image size (hopefully later to be set automatically)
-int imageHeight =    601;
+int imageWidth =     900;    // input image size (hopefully later to be set automatically)
+int imageHeight =    900;
 int topUIHeight =    50;     // size of UI for top and bottom bars
 int bottomUIHeight = 65;
 
