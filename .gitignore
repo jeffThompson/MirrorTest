@@ -2,4 +2,5 @@
 *.mov
 
 /BookExampleCode
-/TrainingTest/NegativeImageFiles
+/AutomatedTraining/NegativeImageFiles
+/EarlyTrainingTests
