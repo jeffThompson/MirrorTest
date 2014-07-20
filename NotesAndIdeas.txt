@@ -1,12 +1,74 @@
 
 NOTES && IDEAS:
 
-"Our forebears expected [the future] to be pretty much like their present, which had been pretty much like their past. Exponential trends [in technology] did exist one thousand years ago, but they were at that very early stage in which they were so flat that they looked like no trend at all." - pg 33
+WORKFLOW
+1. Shoot images
+2. Crop and clean up as needed
+3. Run "no Black pixels"
+4. Remove background and set to RGB(0,0,0)
+5. Create collection file
+6. Create negative image list
+7. Run training py script
+8. Test
+
+- - -
+
+Add info and thank you to each finished cascade?
+
+- - -
+
+Seems to be better: large # stages, high pos/neg ratio
+- 15 stages, 1 pos, 100 neg, 0.95 accept
+
+Try front, front on, side, side on, back?
+
+- - -
+
+"Our forebears expected [the future] to be pretty much like their present, which had been pretty much like their past. Exponential trends [in technology] did exist one thousand years ago, but they were at that very early stage in which they were so flat that they looked like no trend at all." - pg 33, Singularity is Near
 
 DNA is just a self-replicating machine
 
 
 - - - - - - - - -
+
+http://docs.opencv.org/doc/user_guide/ug_traincascade.html#positive-samples
+
+http://abhishek4273.wordpress.com/2014/03/16/traincascade-and-car-detection-using-opencv/
+
+http://stackoverflow.com/questions/18720911/opencv-cascade-classifier-training-using-more-positive-images-to-generate-vec
+
+http://www.computer-vision-software.com/blog/2009/11/faq-opencv-haartraining/
+
+en.wikipedia.org/wiki/Chinese_room
+
+en.wikipedia.org/wiki/Qualia
+
+en.wikipedia.org/wiki/Hard_problem_of_consciousness
+
+en.wikipedia.org/wiki/Computational_theory_of_mind
+
+en.wikipedia.org/wiki/Functionalism_(philosophy_of_mind)
+
+http://note.sonots.com/SciSoftware/haartraining.html
+
+http://answers.opencv.org/question/22964/opencv_traincascade-negative-samples-training/
+
+http://stackoverflow.com/questions/21310446/opencv-positive-samples-dimensions/
+
+http://achuwilson.wordpress.com/2011/02/13/object-detection-using-opencv-using-haartraining/
+
+http://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html
+
+http://note.sonots.com/SciSoftware/haartraining.html
+
+http://stackoverflow.com/questions/21401827/building-positive-samples-for-rotated-images-for-cascaded-training-in-opencv
+
+http://drinkcat.blogspot.nl/2012/12/simple-remote-trigger-for-panasonic.html
+
+http://en.wikipedia.org/wiki/Mirror_test
+
+http://onlinelibrary.wiley.com/doi/10.1002/dev.420050403/abstract;jsessionid=E8320B5533EF03F8D09F8C3A068AC9DF.f01t04
+
 
 http://www.jstor.org/stable/2183914
 
