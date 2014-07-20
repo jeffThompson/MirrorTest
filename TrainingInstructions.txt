@@ -64,6 +64,8 @@ BUT reduce size so they fit in P5 sketch (lazy but faster)
 
 Ideally this would be under diff light, etc
 
+GET RID OF SHADOWS BEHIND OBJECT!
+
 (turntable better?)
 
 Instead of splitting video, resize stills with ImageMagick
@@ -112,6 +114,11 @@ the .vec file is actually a binary file with all the images in it
 - - -
 
 7.	USING create_samples
+
+Can also just use one image and apply random transformations on bg images
+http://docs.opencv.org/doc/user_guide/ug_traincascade.html
+
+-bgcolor is grayscale, 0-255 (use -bgthresh too)
 
 - - -
 
