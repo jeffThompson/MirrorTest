@@ -1,15 +1,35 @@
 
 NOTES && IDEAS:
 
-WORKFLOW
-1. Shoot images
-2. Crop and clean up as needed
-3. Run "no Black pixels"
-4. Remove background and set to RGB(0,0,0)
-5. Create collection file
-6. Create negative image list
-7. Run training py script
-8. Test
+DIGITIZATION PARTY
+[ ]   personal invite to Rosa, Jan, curators?
+[ ]   buy lazy susan, mirror
+[ ]   build arm setup
+[X]   register your computer form
+
+- - -
+
+DEFINITELY NEED ONLINE IMAGES
+Apple IIGS
+AST Advantage! 80486
+Compaq Presario 5140
+Possibly eMachines 533 or similar
+Apple Power Macintosh G3 (Blue & White)
+Toshiba Tecra 8000 laptop
+Mac PowerBook G4 12" laptop
+
+
+POSSIBLY HERE IN UTRECHT
+MacBook Pro 15" (2x)
+iPhone 3G
+iPhone 4
+Nexus 10 tablet
+
+
+HAVE HERE, CAN SHOOT
+MacBook Pro 15" w Retina Display
+Mac Mini
+iPhone 5s
 
 - - -
 
@@ -30,6 +50,8 @@ DNA is just a self-replicating machine
 
 
 - - - - - - - - -
+
+http://www.shervinemami.info/faceRecognition.html
 
 http://docs.opencv.org/doc/user_guide/ug_traincascade.html#positive-samples
 

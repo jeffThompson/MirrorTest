@@ -30,19 +30,19 @@ import time				# keep track of how long each combination takes
 #  VARIABLES
 
 # setup variables
-object_to_detect = 		'MacBookPro-Front'						# what are you detecting? auto-names files for clarity
-collection_filename = 	'MacBookPro_Front_Collection.txt'		# file with bounded objects
+object_to_detect = 		'MacMini'								# what are you detecting? auto-names files for clarity
+collection_filename = 	'MacMini_Collection.txt'				# file with bounded objects
 negative_filename = 	'NegativeImages.txt'					# large file listing negative images
 memory_allocation = 	4000									# how much RAM to use (in MB, should be no more than 1/2 total RAM)
-log_filename =			'Log.csv'								# record settings and results to file
+log_filename =			'Log_' + object_to_detect + '.csv'		# record settings and results to file
 
 # settings to iterate
-pos = 			  [ 1, 5, 11 ] 			# how many positive images to use (will use in order of filename)
-stages = 		  [ 10, 20, 30 ]		# how many stages to run (smaller = faster but less accurate)
+pos = 			  [ 1, 5, 22 ] 			# how many positive images to use (will use in order of filename)
+stages = 		  [ 10, 20 ]			# how many stages to run (smaller = faster but less accurate)
 neg = 			  [ 100, 200 ]			# how many negative images to use
 accept_rate = 	  [ 0.95, 0.99 ]		# acceptance % (higher = more accurate but MUCH slower to train)
-width = 		  [ 24, 32 ]			# output size for vector and training
-height = 		  [ 24, 32 ]
+width = 		  [ 24 ]				# output size for vector and training
+height = 		  [ 24 ]
 
 use_bg_color =	  True
 bgColor = 		  0
@@ -52,10 +52,12 @@ is_symmetrical =  True					# is the object being used symmetrical?
 
 # set paths for output
 local_path = 			os.path.dirname(os.path.realpath(__file__))		# path to script
-collection_path = 		local_path + '/CollectionFiles/' 				# folders will be created below if they don't exist			
-negative_path = 		local_path + '/NegativeImageLists/'
-vector_path = 			local_path + '/VectorFiles/'
-cascade_path = 			local_path + '/CascadeFiles/'
+
+# folders will be created below if they don't exist
+collection_path = 		local_path + '/CollectionFiles_' + object_to_detect + '/'
+negative_path = 		local_path + '/NegativeImageLists_' + object_to_detect + '/'
+vector_path = 			local_path + '/VectorFiles_' + object_to_detect + '/'
+cascade_path = 			local_path + '/CascadeFiles_' + object_to_detect + '/'
 
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ##
