@@ -2,8 +2,8 @@
 // get frame from camera
 PImage getFrame() {
   camera.read();
-  PImage frame = camera.get();
-  frame.resize(width, height);
+  PImage frame = camera.get();   // get frame from camera as PImage
+  frame.resize(width, height);   // resize to window
   
   if (zoom > 1) {
     PImage zoomed = createImage(frame.width, frame.height, RGB);

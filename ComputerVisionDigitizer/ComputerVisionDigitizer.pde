@@ -40,6 +40,11 @@ delete           clear bounding box
 up/down          digital zoom
 
 
+PAPER SIZES:
++  Letter: 5.5 x 8.5" * 72ppi
++  A4: 143.5 x 210mm (~5.85 x 8.3") * 72ppi
+
+
 BORROWED FROM:
 +  Popup dialog box: 
      http://forum.processing.org/two/discussion/4764/how-to-make-a-popup-window/p1
@@ -48,8 +53,11 @@ BORROWED FROM:
 
 
 TO DO:
-+  Count pages, add blank if necessary
-+  Customized cover page?
++  Design cover
++  Test prints
++  Odd spacing of font on cover page?
++  Flip image for easier detection
++  Border around images (rect if necessary)
 
 
 */
@@ -78,13 +86,14 @@ String negativeImageList = "NegativeImages.txt";
 
 int outputFontSize =   10;                 // PDF font size (in px)
 int lineSpacing =      14;                 // space between lines (also in px)
-int pageWidth =        int(5.5 * 72);      // page setup (x72dpi = print res)
-int pageHeight =       int(8.5 * 72);
+int pageWidth =        int(5.85 * 72);     // page setup (x72dpi = print res)
+int pageHeight =       int(8.3 * 72);
 int marginLeft =       int(0.5 * 72);
 int marginTop =        int(0.5 * 72);
 
 
 String objectID, objectName;              // a unique ID and a (not necessarily unique) name for the object
+String pdfObjectName;                     // printable version of the object name (no spaces removed)
 File objectDir;                           // location for storing all details for the object
 PImage rawFrame, processedFrame, mask;    // images loaded, processed, and chroma-key masking
 Capture camera;                           // for webcam input

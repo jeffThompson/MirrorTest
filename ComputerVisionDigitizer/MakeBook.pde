@@ -1,15 +1,43 @@
 
 void makeBook() {
-
-  // load cascade file
-  String[] collection = loadStrings(objectDir.getAbsolutePath() + "/CascadeFiles/cascade.xml");
-
-  // create output font, determine # of characters/line
+  
+  // create output font
   PFont outputFont = createFont("OCRB", outputFontSize);
-  int charsWide = int((pageWidth - (marginLeft * 2)) / (outputFontSize*0.71));
+  
+  // customized cover page
+  PGraphics pdf = createGraphics(pageWidth, pageHeight, PDF, objectDir.getAbsolutePath() + "/TitlePage.pdf");
+  pdf.beginDraw();
+  pdf.fill(110);
+  pdf.noStroke();
+  
+  // Aztec code
+  PImage aztecCode = loadImage(sketchPath("") + "BookFiles/TitlePageAztecCode.gif");
+  pdf.imageMode(CENTER);
+  pdf.image(aztecCode, pageWidth/2, pageHeight/2 - 60, 144,144);    // 2" square
+  
+  // title, object name, and date
+  pdf.textAlign(CENTER, CENTER);
+  pdf.textFont(outputFont, 36);
+  pdf.text("MIRROR TEST", pageWidth/2, pageHeight/2 + 60);
+  pdf.textFont(outputFont, outputFontSize);
+  pdf.text(objectID + ": " + pdfObjectName, pageWidth/2, pageHeight/2 + 95);
+  pdf.text(year(), pageWidth/2, pageHeight - (marginTop*2));
+  
+  // blank page
+  PGraphicsPDF pdfOutput = (PGraphicsPDF) pdf;
+  pdfOutput.nextPage();
+  
+  // close PDF
+  pdf.dispose();
+  pdf.endDraw();
 
+
+  // load cascade file, determine # of characters/line for breaks
+  String[] collection = loadStrings(objectDir.getAbsolutePath() + "/CascadeFiles/cascade.xml");
+  int charsWide = int((pageWidth - (marginLeft * 2)) / (outputFontSize*0.71));
+  
   // initialize PDF, basic settings
-  PGraphics pdf = createGraphics(pageWidth, pageHeight, PDF, objectDir.getAbsolutePath() + "/Cascade.pdf");
+  pdf = createGraphics(pageWidth, pageHeight, PDF, objectDir.getAbsolutePath() + "/Cascade.pdf");
   pdf.beginDraw();
 
   // position variables
@@ -27,12 +55,14 @@ void makeBook() {
   });
   
   int imageDim = (pageWidth - (marginLeft*2)) / 3;
-  for (int iy=0; iy<5; iy++) {
+  for (int iy=0; iy<4; iy++) {
     for (int ix=0; ix<3; ix++) {
       try {
         PImage obj = loadImage(imagesOfObject[iy * 3 + ix].getAbsolutePath());
-        obj.resize(imgW, imgH);                                                                  // resize to size used in training
-        pdf.image(obj, tx + (imageDim * ix) + 2, ty + (imageDim * iy) + 2, imageDim, imageDim);  // draw to screen, adding a little padding (2px)
+        pdf.noSmooth();    // get those crisp pixels!
+        obj.resize(imgW, imgH);                                                                      // resize to size used in training
+        pdf.image(obj, tx + ((imageDim+2) * ix), ty + ((imageDim+2) * iy) + 2, imageDim, imageDim);  // draw to screen, adding a little padding (2px)
+        pdf.smooth();      // set back for fonts
       }
       catch (Exception e) {
         // we've run out of images, leave blank
@@ -42,7 +72,7 @@ void makeBook() {
 
   // update position to next page
   pageCount++;
-  PGraphicsPDF pdfOutput = (PGraphicsPDF) pdf;
+  pdfOutput = (PGraphicsPDF) pdf;
   pdfOutput.nextPage();
 
   // go through cascade file, make PDF
@@ -75,8 +105,14 @@ void makeBook() {
       }
     }
   }
+  
+  // are we at an even # of pages? if not, add one more
+  if (pageCount % 2 != 0) {
+    pdfOutput = (PGraphicsPDF) pdf;
+    pdfOutput.nextPage();
+  }
 
-  // all done, close PDF
+  // close PDF
   pdf.dispose();
   pdf.endDraw();
 
@@ -90,16 +126,20 @@ void makeBook() {
     "-sOutputFile=" + objectDir.getAbsolutePath() + "/" + objectID + "-" + objectName + ".pdf", 
 
     // combine with title page, etc
-    sketchPath("") + "BookFiles/TitlePageAndEssay.pdf", 
+    objectDir.getAbsolutePath() + "/TitlePage.pdf",
+    sketchPath("") + "BookFiles/Essay.pdf", 
     objectDir.getAbsolutePath() + "/Cascade.pdf", 
     sketchPath("") + "BookFiles/EndPage.pdf",
   };
   boolean success = runUnixCommand(command);
   if (success) bookMade = true;
 
-  // finally, delete Cascade.pdf file
+  // finally, delete title page and cascade PDF files
   try {
-    File del = new File(objectDir.getAbsolutePath() + "/Cascade.pdf");
+    File del = new File(objectDir.getAbsolutePath() + "/TitlePage.pdf");
+    del.delete();
+    
+    del = new File(objectDir.getAbsolutePath() + "/Cascade.pdf");
     del.delete();
   }
   catch (Exception e) {

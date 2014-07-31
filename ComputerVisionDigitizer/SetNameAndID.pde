@@ -19,7 +19,7 @@ void setNameAndID() {
   
   // fancier name label with HTML so we can have a line break
   JLabel nameLabel = new JLabel();
-  nameLabel.setText("<html><body><strong>Object name</strong><br>No spaces/special chars</body></html>");
+  nameLabel.setText("<html><body><strong>Object name</strong><br>No special characters!</body></html>");
   panel.add(nameLabel);
   panel.add(name);
   
@@ -31,6 +31,7 @@ void setNameAndID() {
     objectID = id.getText();
     
     objectName = name.getText();
+    pdfObjectName = name.getText();
     objectName = objectName.replaceAll("[^A-Za-z0-9_\\-]", "");
     
     // if no answer, display dialog again

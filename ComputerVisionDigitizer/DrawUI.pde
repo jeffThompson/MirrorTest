@@ -55,7 +55,7 @@ void drawUI() {
   noStroke();
   textFont(font, 16);
   textAlign(LEFT, TOP);
-  text(objectID + ": " + objectName, 20, 20);
+  text(objectID + ": " + pdfObjectName, 20, 20);    // use print version of name
 
   textAlign(LEFT, BOTTOM);
   String s = "Bounds: " + x + "x " + y + "y (" + w + "px)" + "\n";
